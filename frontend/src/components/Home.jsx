@@ -22,7 +22,7 @@ const [todoCards, setTodoCards] = useState([])
         setTodoCards([...newCards])
     },[todoCards])
 return (
-    <div style={{height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+    <div data-testid={'homepage'} style={{height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
     <div style={{height: '80vh', width: '300px', backgroundColor: '#0079bf', marginTop: '64px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', overflow: 'auto'}}>
 
 
