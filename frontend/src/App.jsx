@@ -8,7 +8,7 @@ import {faBars} from "@fortawesome/free-solid-svg-icons";
 
 const App = () => {
   return (
-    <div>
+    <div data-testid={'app'}>
       <nav style={{backgroundColor:'#0079bf', padding: '4px', paddingLeft: '8px'}}>
         <div className="navbar-nav mr-auto">
           <li className="nav-item" style={{width: 'fit-content'}}>
