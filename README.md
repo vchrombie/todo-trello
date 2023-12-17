@@ -8,15 +8,6 @@ Todo app, based on Trello, using `pytrello2`
 ### Backend
 
 ### Frontend
-#### How To Run Frontend Application?
-1. `cd` into `/frontend` for the frontend application
-2. run `npm install` to install all frontend dependencies
-3. run `npm start`
-4. open your browser and launch `localhost:3000` to see the application
-
-#### How To Run Frontend Tests?
-1. `cd` into `/frontend` for the frontend application
-2. run `npm test` to run tests, `npm test-debug` to debug test errors, and `npm test-coverage` to see test coverage.
 
 ## Built using
 
