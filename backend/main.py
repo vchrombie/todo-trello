@@ -6,15 +6,14 @@ from fastapi.responses import RedirectResponse
 from pytrello2 import TrelloClient
 
 # Constants for todo-trello
-# BOARD = "personal"
-# LISTS = ["urgent", "important", "sometime"]
-# LIST = "doing"
+# FOLDERS = "Personal", "Work"
+FOLDER = "Personal"
+# PRIORITIES = ["To Do", "Doing", "Done"]
+PRIORITY = "Doing"
 
 # Environment variables
 API_KEY = os.environ.get("TRELLO_API_KEY")
 TOKEN = os.environ.get("TRELLO_TOKEN")
-
-print(TOKEN)
 
 
 app = FastAPI()
@@ -29,60 +28,68 @@ client = get_trello_client(API_KEY, TOKEN)
 
 @app.get("/")
 async def root():
-    # Retrieve all boards
-    # boards = client.board.get_all_boards()
+    # get or create board
+    folders = client.board.get_all_boards()
+    folder = next((f for f in folders if f.name == FOLDER), None)
+    if not folder:
+        folder = client.board.create_board(FOLDER)
 
-    # Check if the desired board exists
-    '''
-    board_id = None
-    for board in boards:
-        if board.name == BOARD:
-            board_id = board.id
-            break
-    '''
-    # # Create the board if it doesn't exist
-    # if board_id is None:
-    #     board_id = client.board.create_board(BOARD)
+    # get or create list
+    priorities = client.board.get_lists_on_board(folder.id)
+    priority = next((p for p in priorities if p.name == PRIORITY), None)
+    if not priority:
+        priority = client.list.create_list(PRIORITY, folder.id)
 
-    # # Create 'normal' list if it doesn't exist on the board
-    # lists = client.board.get_lists(board_id)
-    # if not any(lst.name == LIST for lst in lists):
-    #     client.board.create_list(board_id, LIST)
-
-    # Redirect to '/tasks' endpoint
-    return RedirectResponse(url="/tasks")
+    # Redirect to tasks/<priority_id>
+    return RedirectResponse(url=f"/tasks/{priority.id}")
 
 
-@app.get("/tasks")
-async def get_all_tasks():
-    # Fetch all tasks from the board
-    tasks = client.list.get_cards_on_list("657d0986c4e8466b450d9d50")
-    return {"message": "Tasks retrieved successfully.", "tasks": tasks}
+@app.get("/tasks/{priority_id}")
+async def get_all_tasks(priority_id: str):
+    # Fetch all tasks on a list
+    tasks = client.list.get_cards_on_list(priority_id)
+    tasks = [task.to_json() for task in tasks]
+    return {
+        "message": f"Tasks retrieved successfull from {priority_id}.",
+        "tasks": tasks
+    }
 
 
-@app.get("/tasks/{task_id}")
+@app.get("/task/{task_id}")
 async def get_task(task_id: str):
     # Fetch an existing task
-    task = client.card.get_card(task_id)
-    return {"message": f"Task {task_id} retrieved successfully", "tasks": task}
+    task = client.card.get_card(task_id).to_json()
+    return {
+        "message": f"Task {task_id} retrieved successfully",
+        "task": task
+    }
 
 
-@app.post("/tasks/{list_id}")
-async def create_task(list_id: str, name: str, desc: str):
+@app.post("/task/{priority_id}")
+async def create_task(priority_id: str, name: str, desc: str):
     # Create a new task
-    task_id = client.card.create_card(idList=list_id, name=name, desc=desc)
-    return {"message": f"Task {task_id} created successfully."}
+    task = client.card.create_card(priority_id, name=name, desc=desc)
+    task_id = task.id
+    return {
+        "message": f"Task {task_id} created successfully.",
+        "task": task
+    }
 
 
-@app.put("/tasks/{card_id}")
-async def update_task(card_id: str, list_id: str, desc: str):
+@app.put("/task/{task_id}")
+async def update_task(task_id: str, name: str, desc: str):
     # Update an existing task
-    client.card.update_card(card_id, list_id, desc)
-    return {"message": f"Task {card_id} updated successfully."}
+    task = client.card.update_card(task_id, name, desc)
+    return {
+        "message": f"Task {task_id} updated successfully.",
+        "task": task,
+    }
 
 
-@app.delete("/tasks/{task_id}")
+@app.delete("/task/{task_id}")
 async def delete_task(task_id: str):
     # Delete an existing task
     client.card.delete_card(task_id)
-    return {"message": f"Task {task_id} deleted successfully."}
+    return {
+        "message": f"Task {task_id} deleted successfully."
+    }
