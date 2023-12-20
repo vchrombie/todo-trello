@@ -1,9 +1,9 @@
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faPlus} from "@fortawesome/free-solid-svg-icons/faPlus";
-import {TodoCard} from "./TodoCard";
 import React, {useCallback, useState} from "react";
 import TodoCardService from "../services/todoCardService";
 import {isEmpty} from "lodash";
+import TodoCard from "./TodoCard";
 
 const Home = () => {
 const [todoCards, setTodoCards] = useState([])
