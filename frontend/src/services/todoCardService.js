@@ -1,6 +1,7 @@
-
+/**
+ * This is a mock API that returns card state for the frontend UI prototype
+ */
 const getTodoCards = () => {
-    // return axios.get(API_URL + "user", { headers: authHeader() });
     return [{id: 1,task: 'Buy Groceries'},{id: 2, task: 'Clean home'},{id: 3, task: 'Laundry'},{id: 4, task: 'Walk' +
             ' the dog'}]
 };

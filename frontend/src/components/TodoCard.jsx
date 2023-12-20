@@ -3,7 +3,7 @@ import {faPenToSquare, faSave} from "@fortawesome/free-solid-svg-icons";
 import {faTrash} from "@fortawesome/free-solid-svg-icons/faTrash";
 import React, {useEffect, useState} from "react";
 
-export const TodoCard = (props) => {
+const TodoCard = (props) => {
     const {card, deleteCard, editCard} = props
     const [isEditing, setIsEditing] = useState(false)
     const [inputValue, setInputValue] = useState(card.task)
@@ -16,15 +16,15 @@ export const TodoCard = (props) => {
         }
     },[])
 
-    return (    <div style={{height: 'fit-content', backgroundColor: '#c4c9cc', width: '250px', marginLeft: '22px', marginTop: '16px', padding: '8px'}}>
+    return (    <div data-testid={'todo-card'} style={{height: 'fit-content', backgroundColor: '#c4c9cc', width: '250px', marginLeft: '22px', marginTop: '16px', padding: '8px'}}>
         <div style={{display: 'flex', justifyContent:
                 'flex-end', margin: '4px', marginBottom: '8px'}}>
             {isEditing ?
-                <FontAwesomeIcon style={{cursor: 'pointer'}} icon={faSave} onClick={()=>{
+                <FontAwesomeIcon data-testid={'save-icon'} style={{cursor: 'pointer'}} icon={faSave} onClick={()=>{
                     editCard({...card, task: inputValue})
                 setIsEditing(false)}
                 }/> :
-                <FontAwesomeIcon style={{cursor: 'pointer'}} icon={faPenToSquare} onClick={()=>{setIsEditing(true)}} />}
+                <FontAwesomeIcon data-testid={'edit-icon'} style={{cursor: 'pointer'}} icon={faPenToSquare} onClick={()=>{setIsEditing(true)}} />}
                 </div>
         <div style={{backgroundColor: 'white', height:'fit-content', width: '100%'}} onClick={()=>{setIsEditing(true)}}>
             {isEditing ?
@@ -34,7 +34,9 @@ export const TodoCard = (props) => {
             <span style={{margin: '4px'}}>{card.task}</span>}</div>
         <div style={{display: 'flex', justifyContent:
                 'flex-end', margin: '4px', marginTop: '8px'}}>
-            {!isEditing ? <FontAwesomeIcon style={{cursor: 'pointer'}} icon={faTrash} onClick={()=>deleteCard(card)}/> : <div style={{height: '10px'}}></div>}
+            {!isEditing ? <FontAwesomeIcon data-testid={'delete-icon'} style={{cursor: 'pointer'}} icon={faTrash} onClick={()=>deleteCard(card)}/> : <div style={{height: '10px'}}></div>}
         </div>
     </div>)
 }
+
+export default TodoCard
